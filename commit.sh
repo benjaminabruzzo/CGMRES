@@ -8,7 +8,7 @@
 
   git add --all .
   git commit -m "$2"
-  git push "$1" ros-kinetic-devel
+  git push "$1" ros-kinetic-ardrone
 
 
 # This will detach your HEAD, that is, leave you with no branch checked out:

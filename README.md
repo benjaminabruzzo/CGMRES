@@ -15,7 +15,7 @@ This repository is still under development.
 # Install
 	mkdir -p ~/ros/src/mayataka_ros && ~/ros/src/mayataka_ros && git init
 	git remote add gh git@github.com:benjaminabruzzo/CGMRES.git && git fetch 
-	git checkout ros-kinetic-devel
+	git checkout ros-kinetic-ardrone
 	
 	cd ~/ros
 	catkin build mayataka_ros
@@ -31,12 +31,13 @@ CMakeLists.txt:
 	# add_library(model STATIC src/ms_model.cpp)
 	add_library(model STATIC src/tlfa_model.cpp)
 
-
 include/pick_model.hpp:
+
 	// #include <ms_model.hpp>
 	#include <tlfa_model.hpp>
 
 src/mayataka_nmpc.cpp:
+
 	// MultipleShootingCGMRES cgmres_solver;
 	ContinuationGMRES cgmres_solver;
 

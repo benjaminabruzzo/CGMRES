@@ -31,12 +31,10 @@ add_library(nmpcsolver 	STATIC
 	src/multiple_shooting_cgmres.cpp
 	)
 add_library(simulator STATIC 
-	# src/numerical_integrator.cpp
 	src/simulator.cpp 
 	)
 
-# add_library(model STATIC src/ms_model.cpp)
-add_library(model STATIC src/tlfa_model.cpp)
+add_library(model STATIC src/ardrone_model.cpp)
 
 
 add_executable(mayataka_nmpc src/mayataka_nmpc.cpp)
