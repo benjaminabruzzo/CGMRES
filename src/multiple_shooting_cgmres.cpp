@@ -66,61 +66,6 @@ void MultipleShootingCGMRES::setSolver(NMPCModel model, double horizon_max_lengt
     lambda_update_mat_ = Eigen::MatrixXd::Zero(dim_state_, horizon_division_num);
 }
 
-// MultipleShootingCGMRES::MultipleShootingCGMRES(
-    //     const NMPCModel model, 
-    //     const double horizon_max_length, 
-    //     const double alpha, 
-    //     const int horizon_division_num, 
-    //     const double difference_increment, 
-    //     const double zeta, const int dim_krylov) : 
-    //     MatrixFreeGMRES((model.dimControlInput()+model.dimConstraints())*horizon_division_num, dim_krylov)
-    // {
-    //     // Set dimensions and parameters.
-    //     model_ = model;
-    //     dim_state_ = model_.dimState();
-    //     dim_control_input_ = model_.dimControlInput();
-    //     dim_constraints_ = model_.dimConstraints();
-    //     dim_control_input_and_constraints_ = dim_control_input_ + dim_constraints_;
-    //     dim_state_and_lambda_ = 2*dim_state_;
-    //     dim_control_input_and_constraints_seq_ = horizon_division_num * dim_control_input_and_constraints_;
-    //     dim_state_and_lambda_seq_ = horizon_division_num * dim_state_and_lambda_;
-
-    //     // Set parameters for horizon and the C/GMRES.
-    //     horizon_max_length_ = horizon_max_length;
-    //     alpha_ = alpha;
-    //     horizon_division_num_ = horizon_division_num;
-    //     difference_increment_ = difference_increment;
-    //     zeta_ = zeta;
-    //     dim_krylov_ = dim_krylov;
-
-    //     // Allocate vectors and matrices.
-    //     dx_vec_.resize(dim_state_);
-    //     incremented_state_vec_.resize(dim_state_);
-    //     control_input_and_constraints_seq_.resize(dim_control_input_and_constraints_seq_);
-    //     incremented_control_input_and_constraints_seq_.resize(dim_control_input_and_constraints_seq_);
-    //     control_input_and_constraints_error_seq_.resize(dim_control_input_and_constraints_seq_);
-    //     control_input_and_constraints_error_seq_1_.resize(dim_control_input_and_constraints_seq_);
-    //     control_input_and_constraints_error_seq_2_.resize(dim_control_input_and_constraints_seq_);
-    //     control_input_and_constraints_error_seq_3_.resize(dim_control_input_and_constraints_seq_);
-    //     control_input_and_constraints_update_seq_.resize(dim_control_input_and_constraints_seq_);
-
-    //     state_mat_.resize(dim_state_, horizon_division_num);
-    //     lambda_mat_.resize(dim_state_, horizon_division_num);
-    //     incremented_state_mat_.resize(dim_state_, horizon_division_num);
-    //     incremented_lambda_mat_.resize(dim_state_, horizon_division_num);
-    //     state_error_mat_.resize(dim_state_, horizon_division_num);
-    //     state_error_mat_1_.resize(dim_state_, horizon_division_num);
-    //     lambda_error_mat_.resize(dim_state_, horizon_division_num);
-    //     lambda_error_mat_1_.resize(dim_state_, horizon_division_num);
-    //     state_update_mat_.resize(dim_state_, horizon_division_num);
-    //     lambda_update_mat_.resize(dim_state_, horizon_division_num);
-
-    //     // Initialize solution of the forward-difference GMRES.
-    //     control_input_and_constraints_update_seq_ = Eigen::VectorXd::Zero(dim_control_input_and_constraints_seq_);
-    //     state_update_mat_ = Eigen::MatrixXd::Zero(dim_state_, horizon_division_num);
-    //     lambda_update_mat_ = Eigen::MatrixXd::Zero(dim_state_, horizon_division_num);
-// }
-
 void MultipleShootingCGMRES::initSolution(const double initial_time, const Eigen::VectorXd& initial_state_vec, const Eigen::VectorXd& initial_guess_input_vec, const double convergence_radius, const int max_iteration)
 {
     Eigen::VectorXd initial_control_input_and_constraints_vec(dim_control_input_and_constraints_), initial_control_input_and_constraints_error(dim_control_input_and_constraints_), initial_lambda_vec(dim_state_);
@@ -145,7 +90,6 @@ void MultipleShootingCGMRES::initSolution(const double initial_time, const Eigen
     lambda_error_mat_ = Eigen::MatrixXd::Zero(dim_state_, horizon_division_num_);
 }
 
-
 void MultipleShootingCGMRES::controlUpdate(const double current_time, const double sampling_period, const Eigen::VectorXd& current_state_vec, Eigen::Ref<Eigen::VectorXd> optimal_control_input_vec)
 {
     // Predict the incremented state.
@@ -167,7 +111,6 @@ void MultipleShootingCGMRES::controlUpdate(const double current_time, const doub
 
     optimal_control_input_vec = control_input_and_constraints_seq_.segment(0, dim_control_input_);
 }
-
 
 double MultipleShootingCGMRES::getError(const double current_time, const Eigen::VectorXd& current_state_vec)
 {

@@ -4,7 +4,7 @@
 
 #ifndef NMPC_MODEL_H
 #define NMPC_MODEL_H
-
+// 1D quadrotor
 #define _USE_MATH_DEFINES
 
 #include <eigen3/Eigen/Core>
@@ -15,8 +15,8 @@
 class NMPCModel{
 private:
     // Define parameters of your model here using "static constexpr".
-    static constexpr int dim_state_ = 4;
-    static constexpr int dim_control_input_ = 2;
+    static constexpr int dim_state_ = 2;
+    static constexpr int dim_control_input_ = 1;
     static constexpr int dim_constraints_ = 0;
 
     static constexpr double m1 = 0.2;
