@@ -33,10 +33,12 @@ CMakeLists.txt:
 
 
 include/pick_model.hpp:
+
 	// #include <ms_model.hpp>
 	#include <tlfa_model.hpp>
 
 src/mayataka_nmpc.cpp:
+
 	// MultipleShootingCGMRES cgmres_solver;
 	ContinuationGMRES cgmres_solver;
 
