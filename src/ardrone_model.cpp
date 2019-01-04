@@ -1,5 +1,5 @@
 // Two link, fully actuated model
-#include "tlfa_model.hpp"
+#include "ardrone_model.hpp"
 
 
 
