@@ -1,5 +1,5 @@
 //
-// Two link, fully actuated model
+// Define parameters and equations of your model in this file.
 //
 
 #ifndef NMPC_MODEL_H
@@ -32,7 +32,7 @@ private:
 
     // Define parameters in the cost function here.
     double q[dim_state_] = {1, 1, 0.1, 0.1};
-    double r[dim_control_input_] = {0.1, 0.1};
+    double r[dim_control_input_] = {0.1};
     double q_terminal[dim_state_] = {1, 1, 0.1, 0.1};
     double x_ref[dim_state_] = {M_PI, 0.0, 0.0, 0.0};
 
