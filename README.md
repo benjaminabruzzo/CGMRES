@@ -24,22 +24,12 @@ This repository is still under development.
 	roslaunch mayataka_ros nmpc.launch
 
 # Choosing between C/GMRES and Multiple Shooting C/GMRES
-To chose which solver is used, there are three places that code needs to be changed, just swap which line is commented:
-
-CMakeLists.txt:
-
-	# add_library(model STATIC src/ms_model.cpp)
-	add_library(model STATIC src/tlfa_model.cpp)
-
-include/pick_model.hpp:
-
-	// #include <ms_model.hpp>
-	#include <tlfa_model.hpp>
+To chose which solver is used, there is only one places that code needs to be changed, just swap which line is commented:
 
 src/mayataka_nmpc.cpp:
 
-	// MultipleShootingCGMRES cgmres_solver;
-	ContinuationGMRES cgmres_solver;
+	// ContinuationGMRES cgmres_solver;
+	MultipleShootingCGMRES cgmres_solver;
 
 
 # References
