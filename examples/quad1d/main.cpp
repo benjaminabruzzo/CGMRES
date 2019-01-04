@@ -11,7 +11,10 @@ int main()
 
     // Define the solver of C/GMRES.
     // ContinuationGMRES cgmres_solver(nmpc_model, 1.0, 1.0, 50, 1.0e-06, 1000, 5);
-    MultipleShootingCGMRES cgmres_solver(nmpc_model, 1.0, 1.0, 50, 1.0e-06, 1000, 3);
+    // MultipleShootingCGMRES cgmres_solver(nmpc_model, 1.0, 1.0, 50, 1.0e-06, 1000, 3);
+
+    // MultipleShootingCGMRES(model, horizon_max_length, alpha, horizon_division_num, difference_increment, zeta, dim_krylov);
+    MultipleShootingCGMRES quad1d_mscgmres(nmpc_model, 1.0, 1.0, 50, 1.0e-04, 1000, 1);
 
     // Define the simulator.
     Simulator cgmres_simulator(nmpc_model);
@@ -29,10 +32,10 @@ int main()
 
 
     // Initialize the solution of the C/GMRES method.
-    cgmres_solver.initSolution(0, initial_state, initial_guess_control_input, 1.0e-06, 50);
+    quad1d_mscgmres.initSolution(0, initial_state, initial_guess_control_input, 1.0e-06, 50);
 
     // Perform a numerical simulation.
-    cgmres_simulator.simulation(cgmres_solver, initial_state, 0, 10, 0.001, "example");
+    cgmres_simulator.simulation(quad1d_mscgmres, initial_state, 0, 0.1, 0.01, "example");
 
 
 

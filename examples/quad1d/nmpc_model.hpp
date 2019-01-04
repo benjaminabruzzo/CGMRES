@@ -19,22 +19,22 @@ private:
     static constexpr int dim_control_input_ = 1;
     static constexpr int dim_constraints_ = 0;
 
-    static constexpr double m1 = 0.2;
-    static constexpr double m2 = 0.7;
-    static constexpr double l1 = 0.3;
-    static constexpr double l2 = 0.3;
-    static constexpr double d1 = 0.15;
-    static constexpr double d2 = 0.257;
-    static constexpr double J1 = 0.006;
-    static constexpr double J2 = 0.051;
-    static constexpr double g = 9.80665;
+    static constexpr double mass = 1;
+    static constexpr double thrust = 1;
+    // static constexpr double l1 = 0.3;
+    // static constexpr double l2 = 0.3;
+    // static constexpr double d1 = 0.15;
+    // static constexpr double d2 = 0.257;
+    // static constexpr double J1 = 0.006;
+    // static constexpr double J2 = 0.051;
+    // static constexpr double g = 9.80665;
 
 
     // Define parameters in the cost function here.
-    double q[dim_state_] = {1, 1, 0.1, 0.1};
-    double r[dim_control_input_] = {0.1, 0.1};
-    double q_terminal[dim_state_] = {1, 1, 0.1, 0.1};
-    double x_ref[dim_state_] = {M_PI, 0.0, 0.0, 0.0};
+    double q[dim_state_] = {1, 1};
+    double r[dim_control_input_] = {0.1};
+    double q_terminal[dim_state_] = {1, 1};
+    double x_ref[dim_state_] = {3.5, 0.0};
 
 
 

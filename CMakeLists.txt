@@ -12,8 +12,8 @@ include_directories(${MODEL_DIR})
 
 add_subdirectory(${MODEL_DIR})
 add_subdirectory(src)
-add_executable(a.out ${MODEL_DIR}/main.cpp)
+add_executable(sim ${MODEL_DIR}/main.cpp)
 
-target_link_libraries(a.out simulator)
-target_link_libraries(a.out nmpcsolver)
-target_link_libraries(a.out model)
+target_link_libraries(sim simulator)
+target_link_libraries(sim nmpcsolver)
+target_link_libraries(sim model)

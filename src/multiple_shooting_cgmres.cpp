@@ -1,7 +1,10 @@
 #include "multiple_shooting_cgmres.hpp"
+#include <iostream>
 
 
-MultipleShootingCGMRES::MultipleShootingCGMRES(const NMPCModel model, const double horizon_max_length, const double alpha, const int horizon_division_num, const double difference_increment, const double zeta, const int dim_krylov) : MatrixFreeGMRES((model.dimControlInput()+model.dimConstraints())*horizon_division_num, dim_krylov)
+
+MultipleShootingCGMRES::MultipleShootingCGMRES(const NMPCModel model, const double horizon_max_length, const double alpha, const int horizon_division_num, const double difference_increment, const double zeta, const int dim_krylov) : 
+    MatrixFreeGMRES((model.dimControlInput()+model.dimConstraints())*horizon_division_num, dim_krylov)
 {
     // Set dimensions and parameters.
     model_ = model;
@@ -82,10 +85,15 @@ void MultipleShootingCGMRES::controlUpdate(const double current_time, const doub
     model_.stateFunc(current_time, current_state_vec, control_input_and_constraints_seq_.segment(0, dim_control_input_), dx_vec_);
     incremented_state_vec_ = current_state_vec + difference_increment_*dx_vec_;
 
+    // std::cout << "current_time : " << current_time << std::endl;
+    // std::cout << "current_state_vec : " << current_state_vec << std::endl;
+    // std::cout << "control_input_and_constraints_seq_ : " << control_input_and_constraints_seq_ << std::endl;
+    // std::cout << "control_input_and_constraints_update_seq_ : " << control_input_and_constraints_update_seq_ << std::endl;
     forwardDifferenceGMRES(current_time, current_state_vec, control_input_and_constraints_seq_, control_input_and_constraints_update_seq_);
 
     // Update state_mat_ and lamdba_mat_ by the difference approximation.
-    computeStateAndLambda(incremented_time_, incremented_state_vec_, control_input_and_constraints_seq_+difference_increment_*control_input_and_constraints_update_seq_, (1-difference_increment_*zeta_)*state_error_mat_, (1-difference_increment_*zeta_)*lambda_error_mat_, incremented_state_mat_, incremented_lambda_mat_);
+    // computeStateAndLambda(time_param,        state_vec,              control_input_and_constraints_seq,                                                                  optimality_for_state,                               optimality_for_lambda,                              state_mat,              lambda_mat)
+    computeStateAndLambda(incremented_time_,    incremented_state_vec_, control_input_and_constraints_seq_+difference_increment_*control_input_and_constraints_update_seq_, (1-difference_increment_*zeta_)*state_error_mat_,   (1-difference_increment_*zeta_)*lambda_error_mat_,  incremented_state_mat_, incremented_lambda_mat_);
     state_update_mat_ = (incremented_state_mat_ - state_mat_)/difference_increment_;
     lambda_update_mat_ = (incremented_lambda_mat_ - lambda_mat_)/difference_increment_;
     state_mat_ += sampling_period * state_update_mat_;

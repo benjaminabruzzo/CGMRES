@@ -94,6 +94,8 @@ void Simulator::simulation(MultipleShootingCGMRES cgmres_solver, const Eigen::Ve
         // Update the solution and measure computational time.
         start_clock = std::chrono::system_clock::now();
         cgmres_solver.controlUpdate(current_time, sampling_period, current_state_vec, control_input_vec);
+        std::cout << "control_input_vec : " << control_input_vec << std::endl;
+
         end_clock = std::chrono::system_clock::now();
 
         // Convert computational time to seconds.
