@@ -34,7 +34,7 @@ add_library(simulator STATIC
 	src/simulator.cpp 
 	)
 
-add_library(model STATIC src/ardrone_model.cpp)
+add_library(model STATIC src/ardrone_model_1d.cpp)
 
 
 add_executable(mayataka_nmpc src/mayataka_nmpc.cpp)
