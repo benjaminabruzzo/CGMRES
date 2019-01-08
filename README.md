@@ -13,7 +13,7 @@ This project provides Continuation/GMRES method (C/GMRES method), a fast algorit
 # install
 
 	mkdir -p ~/mayataka/cmgres && cd ~/mayataka/cmgres && git init
-	git remote add gh https://github.com/benjaminabruzzo/CGMRES.git && git pull gh master && git fetch gh
+	git remote add gh git@github.com:benjaminabruzzo/CGMRES.git && git pull gh master && git fetch gh
 
 # Usage
 After setting the parameters of your model of NMPC in nmpc_model.hpp, writing equations in nmpc_model.cpp, and setting simulation conditions in main.cpp, build files as follows:
