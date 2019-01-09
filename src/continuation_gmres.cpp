@@ -121,12 +121,15 @@ void ContinuationGMRES::computeOptimalityError(const double time_param, const Ei
 }
 
 void ContinuationGMRES::bFunc(const double time_param, const Eigen::VectorXd& state_vec, const Eigen::VectorXd& current_solution_vec, Eigen::Ref<Eigen::VectorXd> equation_error_vec)
-{
+{// This function is only called once per control update
     computeOptimalityError(time_param, state_vec, current_solution_vec, optimality_vec_);
-    computeOptimalityError(incremented_time_, incremented_state_vec_, current_solution_vec, optimality_vec_1_);
     computeOptimalityError(incremented_time_, incremented_state_vec_, current_solution_vec+difference_increment_*solution_update_vec_, optimality_vec_2_);
-
     equation_error_vec = (1/difference_increment_-zeta_) *optimality_vec_ - optimality_vec_2_/difference_increment_;
+
+    //This value is used in the Ax computation, but is called here so that it is not redundantly called in each loop of the forwardDiffGMRES
+    computeOptimalityError(incremented_time_, incremented_state_vec_, current_solution_vec, optimality_vec_1_);
+
+    
 }
 
 inline void ContinuationGMRES::axFunc(const double time_param, const Eigen::VectorXd& state_vec, const Eigen::VectorXd& current_solution_vec, const Eigen::VectorXd& direction_vec, Eigen::Ref<Eigen::VectorXd> forward_difference_error_vec)
@@ -148,7 +151,6 @@ void ContinuationGMRES::forwardDifferenceGMRES(const double time_param, const Ei
     bFunc(time_param, state_vec, current_solution_vec, b_vec_);
     g_vec_(0) = b_vec_.norm();
     basis_mat_.col(0) = b_vec_ / g_vec_(0);
-
 
     // k : the dimension of the Krylov subspace at the current iteration.
     int k;
