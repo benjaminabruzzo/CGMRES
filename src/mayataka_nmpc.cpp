@@ -24,8 +24,15 @@ class mayataka_nmpc
 			NodeShutDown_sub 	= n.subscribe(s_shutdown_topic,		1, &mayataka_nmpc::nodeShutDown, 	this);
 
 			// Define the solver of C/GMRES.
-			double horizon_division_num = 50;
-			cgmres_solver.setSolver(nmpc_model, 1.0, 1.0, horizon_division_num, 1.0e-06, 1000, 3);
+			
+			
+			double horizon_max_length = 1.0; // seconds
+			double alpha = 1.0; // scale for time smoothing function
+			double horizon_division_num = 50; 
+			double difference_increment = 1e-6; // dt for continuation of Fu
+			double zeta = 1000;  // "a positive real number"
+			double dim_krylov = 3; // max_krylov = dim_krylov
+			cgmres_solver.setSolver(nmpc_model, horizon_max_length, alpha, horizon_division_num, difference_increment, zeta, dim_krylov);
 
 			// Set the initial state.
 			Eigen::VectorXd initial_state(nmpc_model.dimState());
@@ -36,12 +43,19 @@ class mayataka_nmpc
 			initial_guess_control_input = Eigen::VectorXd::Zero(nmpc_model.dimControlInput()+nmpc_model.dimConstraints());
 
 			// Initialize the solution of the C/GMRES method.
-			cgmres_solver.initSolution(0, initial_state, initial_guess_control_input, 1.0e-06, 50);
+			double initial_time = 0;
+			double convergence_radius = 1.0e-06;
+			int max_iteration = 50;
+			cgmres_solver.initSolution(initial_time, initial_state, initial_guess_control_input, convergence_radius, max_iteration);
 
 			ROS_INFO("mayataka_nmpc:: mayataka_nmpc started.");
 			// Perform a numerical simulation.
 			cgmres_simulator.initModel(nmpc_model);
-			cgmres_simulator.simulation(cgmres_solver, initial_state, 0, 10, 0.001, "example");
+			double start_time = 0; //seconds
+			double end_time = 10; //seconds
+			double sampling_period = 0.001; //seconds
+			// std::string savefile_name = "example";
+			cgmres_simulator.simulation(cgmres_solver, initial_state, start_time, end_time, sampling_period, "example");
 		}
 
 		void nodeShutDown(const std_msgs::EmptyConstPtr& msg)
