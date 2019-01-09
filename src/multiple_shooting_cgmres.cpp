@@ -249,7 +249,7 @@ void MultipleShootingCGMRES::forwardDifferenceGMRES(const double time_param, con
 
     // k : the dimension of the Krylov subspace at the current iteration.
     int k;
-    for(k=0; k<max_dim_krylov_; k++){
+    for(k=0; k<max_dim_krylov_; k++){ //Arnoldi Iteration
         axFunc(time_param, state_vec, current_solution_vec, basis_mat_.col(k), basis_mat_.col(k+1));
         for(int j=0; j<=k; j++){
             hessenberg_mat_(j,k) = basis_mat_.col(k+1).dot(basis_mat_.col(j));

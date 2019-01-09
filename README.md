@@ -15,7 +15,7 @@ This repository is still under development.
 # Install
 	mkdir -p ~/ros/src/mayataka_ros && cd ~/ros/src/mayataka_ros && git init
 	git remote add gh git@github.com:benjaminabruzzo/CGMRES.git && git fetch gh
-	git checkout ros-kinetic-ardrone
+	git checkout ros-kinetic-devel
 	
 	cd ~/ros
 	catkin build mayataka_ros
@@ -24,12 +24,23 @@ This repository is still under development.
 	roslaunch mayataka_ros nmpc.launch
 
 # Choosing between C/GMRES and Multiple Shooting C/GMRES
-To chose which solver is used, there is only one places that code needs to be changed, just swap which line is commented:
+To chose which solver is used, there are three places that code needs to be changed, just swap which line is commented:
+
+CMakeLists.txt:
+
+	# add_library(model STATIC src/ms_model.cpp)
+	add_library(model STATIC src/tlfa_model.cpp)
+
+
+include/pick_model.hpp:
+
+	// #include <ms_model.hpp>
+	#include <tlfa_model.hpp>
 
 src/mayataka_nmpc.cpp:
 
-	// ContinuationGMRES cgmres_solver;
-	MultipleShootingCGMRES cgmres_solver;
+	// MultipleShootingCGMRES cgmres_solver;
+	ContinuationGMRES cgmres_solver;
 
 
 # References

@@ -47,40 +47,6 @@ void ContinuationGMRES::setSolver(const NMPCModel model, const double horizon_ma
 }
 
 
-// ContinuationGMRES::ContinuationGMRES(const NMPCModel model, const double horizon_max_length, const double alpha, const int horizon_division_num, const double difference_increment, const double zeta, const int dim_krylov) : MatrixFreeGMRES((model.dimControlInput()+model.dimConstraints())*horizon_division_num, dim_krylov)
-// {
-//     // Set dimensions and parameters.
-//     model_ = model;
-//     dim_state_ = model_.dimState();
-//     dim_control_input_ = model_.dimControlInput();
-//     dim_constraints_ = model_.dimConstraints();
-//     dim_control_input_and_constraints_ = dim_control_input_ + dim_constraints_;
-//     dim_solution_ = horizon_division_num * dim_control_input_and_constraints_;
-
-//     // Set parameters for horizon and the C/GMRES.
-//     horizon_max_length_ = horizon_max_length;
-//     alpha_ = alpha;
-//     horizon_division_num_ = horizon_division_num;
-//     difference_increment_ = difference_increment;
-//     zeta_ = zeta;
-//     dim_krylov_ = dim_krylov;
-
-//     // Allocate matrices and vectors.
-//     dx_vec_.resize(dim_state_);
-//     incremented_state_vec_.resize(dim_state_);
-//     state_mat_.resize(dim_state_, horizon_division_num_+1);
-//     lambda_mat_.resize(dim_state_, horizon_division_num_+1);
-//     solution_vec_.resize(dim_solution_);
-//     optimality_vec_.resize(dim_solution_);
-//     optimality_vec_1_.resize(dim_solution_);
-//     optimality_vec_2_.resize(dim_solution_);
-//     solution_update_vec_.resize(dim_solution_);
-
-//     // Initialize solution of the forward-difference GMRES.
-//     solution_update_vec_ = Eigen::VectorXd::Zero(dim_solution_);
-// }
-
-
 void ContinuationGMRES::initSolution(const double initial_time, const Eigen::VectorXd& initial_state_vec, const Eigen::VectorXd& initial_guess_input_vec, const double convergence_radius, const int max_iteration)
 {
     Eigen::VectorXd initial_solution_vec(dim_control_input_and_constraints_);
@@ -120,6 +86,16 @@ double ContinuationGMRES::getError(const double current_time, const Eigen::Vecto
     return error_vec.norm();
 }
 
+inline void ContinuationGMRES::givensRotation(Eigen::Ref<Eigen::VectorXd> column_vec, const int i_column)
+{
+    double tmp1, tmp2;
+
+    tmp1 = givens_c_vec_(i_column) * column_vec(i_column) - givens_s_vec_(i_column) * column_vec(i_column+1);
+    tmp2 = givens_s_vec_(i_column) * column_vec(i_column) + givens_c_vec_(i_column) * column_vec(i_column+1);
+
+    column_vec(i_column) = tmp1;
+    column_vec(i_column+1) = tmp2;
+}
 
 void ContinuationGMRES::computeOptimalityError(const double time_param, const Eigen::VectorXd& state_vec, const Eigen::VectorXd& current_solution_vec, Eigen::Ref<Eigen::VectorXd> optimality_vec)
 {
@@ -144,7 +120,6 @@ void ContinuationGMRES::computeOptimalityError(const double time_param, const Ei
     }
 }
 
-
 void ContinuationGMRES::bFunc(const double time_param, const Eigen::VectorXd& state_vec, const Eigen::VectorXd& current_solution_vec, Eigen::Ref<Eigen::VectorXd> equation_error_vec)
 {
     computeOptimalityError(time_param, state_vec, current_solution_vec, optimality_vec_);
@@ -154,27 +129,15 @@ void ContinuationGMRES::bFunc(const double time_param, const Eigen::VectorXd& st
     equation_error_vec = (1/difference_increment_-zeta_) *optimality_vec_ - optimality_vec_2_/difference_increment_;
 }
 
-
 inline void ContinuationGMRES::axFunc(const double time_param, const Eigen::VectorXd& state_vec, const Eigen::VectorXd& current_solution_vec, const Eigen::VectorXd& direction_vec, Eigen::Ref<Eigen::VectorXd> forward_difference_error_vec)
 {
     computeOptimalityError(incremented_time_, incremented_state_vec_, current_solution_vec+difference_increment_*direction_vec, optimality_vec_2_);
     forward_difference_error_vec = (optimality_vec_2_ - optimality_vec_1_) / difference_increment_;
 }
 
-inline void ContinuationGMRES::givensRotation(Eigen::Ref<Eigen::VectorXd> column_vec, const int i_column)
-{
-    double tmp1, tmp2;
-
-    tmp1 = givens_c_vec_(i_column) * column_vec(i_column) - givens_s_vec_(i_column) * column_vec(i_column+1);
-    tmp2 = givens_s_vec_(i_column) * column_vec(i_column) + givens_c_vec_(i_column) * column_vec(i_column+1);
-
-    column_vec(i_column) = tmp1;
-    column_vec(i_column+1) = tmp2;
-}
-
 void ContinuationGMRES::forwardDifferenceGMRES(const double time_param, const Eigen::VectorXd& state_vec, const Eigen::VectorXd& current_solution_vec, Eigen::Ref<Eigen::VectorXd> solution_update_vec)
 {
-    // Initialize vectors for QR factrization by Givens rotation.
+    // Initialize vectors for QR factorization by Givens rotation.
     for(int i=0; i<=max_dim_krylov_; i++){
         givens_c_vec_(i) = 0.0;
         givens_s_vec_(i) = 0.0;
